@@ -17,8 +17,7 @@ class Move {
     staminaCost,
     moveType,
     validPositions,
-    newPosition = null,
-    isDefense = false,
+    targetPosition = null,
     description = ''
   ) {
     this.name = name;
@@ -26,8 +25,7 @@ class Move {
     this.staminaCost = staminaCost;
     this.type = moveType;
     this.validPositions = validPositions;
-    this.newPosition = newPosition;
-    this.isDefense = isDefense;
+    this.targetPosition = targetPosition;
     this.description = description;
   }
 
@@ -36,183 +34,164 @@ class Move {
   }
 }
 
-// Define all possible moves
+// Define the moves according to your specifications
 const ALL_MOVES = [
-  // Moves valid in Open and Clinch positions
+  // Open Position Moves
+  new Move(
+    'Open Elbow',
+    18, // Increased damage
+    5,
+    'strike',
+    ['Open'],
+    null,
+    'An elbow strike in open position.'
+  ),
+  new Move(
+    'Open Knee',
+    22, // Increased damage
+    7,
+    'strike',
+    ['Open'],
+    null,
+    'A swift knee strike in open position.'
+  ),
   new Move(
     'Punch',
-    10,
+    20, // Increased damage
     4,
     'strike',
-    ['Open', 'Clinch'],
+    ['Open'],
     null,
-    false,
     'A quick punch to the opponent.'
   ),
   new Move(
     'Kick',
-    15,
+    25, // Increased damage
     6,
     'strike',
-    ['Open', 'Clinch'],
+    ['Open'],
     null,
-    false,
     'A powerful kick aimed at the opponent.'
   ),
   new Move(
-    'Elbow',
-    8,
-    7,
-    'strike',
-    ['Clinch'],
-    null,
-    false,
-    'An elbow strike in close quarters.'
-  ),
-  new Move(
-    'Knee',
-    10,
-    8,
-    'strike',
-    ['Clinch'],
-    null,
-    false,
-    'A knee strike targeting the body.'
-  ),
-  // Takedowns valid in Open and Clinch positions
-  new Move(
-    'Takedown',
+    'Single Leg',
     0,
     8,
     'takedown',
-    ['Open', 'Clinch'],
-    'Ground',
-    false,
-    'Attempt a takedown to bring the fight to the ground.'
-  ),
-  // Position changes
-  new Move(
-    'Initiate Clinch',
-    0,
-    4,
-    'position',
     ['Open'],
-    'Clinch',
-    false,
-    'Close the distance to clinch.'
+    'Ground',
+    'Attempt a single-leg takedown.'
   ),
   new Move(
-    'Break Clinch',
+    'Blast Double',
+    0,
+    10,
+    'takedown',
+    ['Open'],
+    'Ground',
+    'Attempt a double-leg takedown.'
+  ),
+  new Move(
+    'Sprawl',
+    0,
+    5,
+    'defense',
+    [], // Can be played in response to a takedown
+    null,
+    'Defend against a takedown attempt.'
+  ),
+  // Clinch Position Moves
+  new Move(
+    'Clinch Elbow',
+    22, // Increased damage
+    6,
+    'strike',
+    ['Clinch'],
+    null,
+    'A powerful elbow strike in close quarters.'
+  ),
+  new Move(
+    'Clinch Knee',
+    25, // Increased damage
+    8,
+    'strike',
+    ['Clinch'],
+    null,
+    'A devastating knee to the opponent in clinch.'
+  ),
+  new Move(
+    'Judo Throw',
+    0,
+    9,
+    'takedown',
+    ['Clinch'],
+    'Ground',
+    'Attempt to throw the opponent to the ground.'
+  ),
+  new Move(
+    'Single Leg',
+    0,
+    8,
+    'takedown',
+    ['Clinch'],
+    'Ground',
+    'Attempt a single-leg takedown.'
+  ),
+  new Move(
+    'Clinch Break',
     0,
     4,
     'position',
     ['Clinch'],
     'Open',
-    false,
-    'Break the clinch and create distance.'
+    'Break the clinch and return to open position.'
   ),
-  // Ground Position Moves valid only in Ground position
-  new Move(
-    'Elbow Smash',
-    10,
-    5,
-    'strike',
-    ['Ground'],
-    null,
-    false,
-    'A powerful elbow strike on the ground.'
-  ),
-  new Move(
-    'Ground Punch',
-    8,
-    4,
-    'strike',
-    ['Ground'],
-    null,
-    false,
-    'Punch the opponent on the ground.'
-  ),
+  // Ground Position Moves
   new Move(
     'Chokehold',
     0,
-    8,
+    10,
     'submission',
     ['Ground'],
     null,
-    false,
     'Attempt a choke submission.'
   ),
   new Move(
     'Armbar',
     0,
-    8,
+    10,
     'submission',
     ['Ground'],
     null,
-    false,
     'Attempt an armbar submission.'
   ),
   new Move(
     'Leglock',
     0,
-    8,
+    10,
     'submission',
     ['Ground'],
     null,
-    false,
     'Attempt a leglock submission.'
   ),
   new Move(
-    'Stand Up',
+    'Stand',
     0,
-    4,
+    6,
     'position',
     ['Ground'],
     'Open',
-    false,
-    'Stand up from the ground.'
+    'Stand up and return to open position.'
   ),
-  // Defense Cards
+  // Defense Moves
   new Move(
     'Submission Escape',
     0,
-    4,
+    5,
     'defense',
-    ['Open', 'Clinch', 'Ground'],
+    [], // Can be played in response to a submission
     null,
-    true,
     'Escape an attempted submission.'
-  ),
-  new Move(
-    'Position Reversal',
-    0,
-    6,
-    'defense',
-    ['Open', 'Clinch', 'Ground'],
-    'Clinch',
-    true,
-    'Reverse the position to clinch.'
-  ),
-  new Move(
-    'Guard',
-    0,
-    3,
-    'defense',
-    ['Open', 'Clinch', 'Ground'],
-    null,
-    true,
-    'Defend against strikes.'
-  ),
-  // New Defensive Card
-  new Move(
-    'Full Mount',
-    0,
-    7,
-    'defense',
-    ['Ground'],
-    'Ground',
-    true,
-    'Gain an advantageous position.'
   ),
 ];
 
@@ -239,7 +218,8 @@ class Fighter {
     this.isHuman = isHuman;
     this.difficulty = difficulty; // For AI fighters
     this.colorClass = colorClass; // 'player-red' or 'player-blue'
-    this.submissionPending = false; // New property to handle submissions
+    this.submissionPending = false; // For handling submissions
+    this.takedownPending = false; // For handling takedown defense
 
     // Draw initial hand
     this.drawHand();
@@ -272,90 +252,83 @@ class Fighter {
     const move = this.hand[moveIndex];
 
     // Check if move is valid
-    if (!move.validPositions.includes(this.position)) {
-      console.log(
-        `${this.name} cannot perform ${move.name} from ${this.position} position.`
-      );
-      return false;
+    if (this.submissionPending) {
+      if (move.name !== 'Submission Escape') {
+        console.log(`${this.name} must play 'Submission Escape' or pass.`);
+        return false;
+      }
+    } else if (this.takedownPending) {
+      if (move.name !== 'Sprawl') {
+        console.log(`${this.name} must play 'Sprawl' or pass.`);
+        return false;
+      }
+    } else {
+      if (!move.validPositions.includes(this.position)) {
+        console.log(
+          `${this.name} cannot perform ${move.name} from ${this.position} position.`
+        );
+        return false;
+      }
+      if (
+        move.name === 'Submission Escape' ||
+        move.name === 'Sprawl'
+      ) {
+        console.log(`${this.name} cannot use ${move.name} right now.`);
+        return false;
+      }
     }
 
-    // Adjust stamina cost for playstyles
-    let staminaCost = move.staminaCost;
-    if (this.playstyle === 'Takedown Artist' && move.type === 'takedown') {
-      staminaCost = Math.max(staminaCost - 2, 1);
-    }
-    if (this.playstyle === 'Knockout Artist' && move.type === 'strike') {
-      staminaCost = Math.max(staminaCost - 1, 1); // Slight stamina reduction for strikes
-    }
-    if (this.stamina < staminaCost) {
+    // Check stamina
+    if (this.stamina < move.staminaCost) {
       console.log(
         `${this.name} does not have enough stamina to perform ${move.name}.`
       );
       return false;
     }
 
-    // Specific logic for submissions
-    if (move.type === 'submission') {
-      if (this.stamina < 20 && this.playstyle !== 'Submission Artist') {
-        console.log(
-          `${this.name} does not have enough stamina to attempt a submission.`
-        );
-        return false;
-      }
-      opponent.submissionPending = true; // Set submission pending on opponent
-    }
-
     // Deduct stamina
-    this.stamina -= staminaCost;
+    this.stamina -= move.staminaCost;
     this.stamina = Math.max(0, Math.min(this.stamina, 100));
 
     // Apply move effects
     let moveDescription = '';
     if (move.type === 'strike') {
       let damage = move.damage;
-      if (this.playstyle === 'Knockout Artist') {
-        damage += 2; // Knockout Artist deals extra damage with strikes
-      }
       opponent.receiveDamage(damage);
       moveDescription = `${this.name} uses ${move.name} on ${opponent.name} (-${damage})`;
     } else if (move.type === 'takedown') {
-      const success = this.attemptTakedown(opponent);
-      if (success) {
-        const newPosition = move.newPosition;
-        this.position = newPosition;
-        opponent.position = newPosition;
-        moveDescription = `${this.name} successfully executes ${move.name}`;
-      } else {
-        moveDescription = `${this.name}'s ${move.name} attempt failed`;
-      }
-    } else if (move.type === 'submission') {
-      moveDescription = `${this.name} attempts ${move.name} on ${opponent.name}`;
+      opponent.takedownPending = true;
+      moveDescription = `${this.name} attempts ${move.name}`;
       // Do not switch turns here; opponent responds
     } else if (move.type === 'position') {
-      const newPosition = move.newPosition;
+      const newPosition = move.targetPosition;
       this.position = newPosition;
-      opponent.position = newPosition;
       moveDescription = `${this.name} changes position to ${newPosition}`;
-    } else if (move.type === 'defense' && move.isDefense) {
-      if (this.submissionPending && move.name === 'Submission Escape') {
+    } else if (move.type === 'submission') {
+      moveDescription = `${this.name} attempts ${move.name} on ${opponent.name}`;
+      opponent.submissionPending = true;
+      // Do not switch turns here; opponent responds
+    } else if (move.type === 'defense') {
+      if (move.name === 'Stand') {
+        this.position = move.targetPosition;
+        moveDescription = `${this.name} stands up to ${this.position} position`;
+      } else if (move.name === 'Submission Escape') {
         this.submissionPending = false;
         moveDescription = `${this.name} escapes the submission attempt!`;
-      } else if (move.name === 'Position Reversal') {
-        const newPosition = move.newPosition;
-        this.position = newPosition;
-        opponent.position = newPosition;
-        moveDescription = `${this.name} performs ${move.name}, moving to ${newPosition}`;
-      } else if (move.name === 'Guard') {
-        moveDescription = `${this.name} uses Guard to defend`;
-      } else if (move.name === 'Full Mount') {
-        this.position = 'Ground';
-        opponent.position = 'Ground';
-        moveDescription = `${this.name} gains Full Mount position`;
-      } else {
-        console.log(`${this.name} cannot use ${move.name} right now.`);
-        return false;
+      } else if (move.name === 'Sprawl') {
+        // Sprawl reduces opponent's takedown success
+        const success = opponent.attemptTakedown(this) && Math.random() < 0.3;
+        if (success) {
+          this.position = 'Ground';
+          opponent.position = 'Ground';
+          moveDescription = `${opponent.name} overcomes the sprawl and successfully takes down ${this.name}`;
+        } else {
+          moveDescription = `${this.name} successfully sprawls and defends the takedown!`;
+        }
+        this.takedownPending = false;
       }
     }
+
     // Discard the used card
     this.discardPile.push(this.hand.splice(moveIndex, 1)[0]);
     // Draw a new card
@@ -372,40 +345,19 @@ class Fighter {
     }
   }
 
-  attemptSubmission(opponent) {
-    const chance = Math.floor(Math.random() * 100) + 1;
-    let baseThreshold =
-      40 +
-      Math.floor((30 - opponent.stamina) / 2) +
-      Math.floor((100 - opponent.health) / 5);
-
-    if (this.playstyle === 'Submission Artist') {
-      baseThreshold += 20;
-    }
-    if (opponent.playstyle === 'Submission Artist') {
-      baseThreshold -= 20;
-    }
-    baseThreshold = Math.max(5, Math.min(baseThreshold, 95));
-    if (this.hasOwnProperty('submissionAttempts')) {
-      this.submissionAttempts += 1;
-      baseThreshold += this.submissionAttempts * 5;
-    } else {
-      this.submissionAttempts = 1;
-    }
-    return chance <= baseThreshold;
+  attemptTakedown(opponent) {
+    let successChance = 60;
+    successChance += (this.stamina - opponent.stamina) / 5;
+    successChance = Math.max(10, Math.min(successChance, 90));
+    return Math.random() * 100 < successChance;
   }
 
-  attemptTakedown(opponent) {
-    const chance = Math.floor(Math.random() * 100) + 1;
-    let baseThreshold =
-      60 +
-      Math.floor((this.stamina - opponent.stamina) / 2) +
-      Math.floor((100 - opponent.health) / 10);
-    if (this.playstyle === 'Takedown Artist') {
-      baseThreshold += 20;
-    }
-    baseThreshold = Math.max(5, Math.min(baseThreshold, 95));
-    return chance <= baseThreshold;
+  attemptSubmission(opponent) {
+    let successChance = 40;
+    successChance += (this.stamina - opponent.stamina) / 5;
+    successChance += (100 - opponent.health) / 10;
+    successChance = Math.max(10, Math.min(successChance, 90));
+    return Math.random() * 100 < successChance;
   }
 
   isKnockedOut() {
@@ -424,24 +376,24 @@ let currentPlayer;
 let currentOpponent;
 let gameMode;
 let gameDifficulty;
-let playstyles = ['Knockout Artist', 'Submission Artist', 'Takedown Artist'];
 let moveHistory = [];
 let playerNames = {};
 let keepSettings = false;
-let gameOver = false; // Added gameOver flag
+let gameOver = false;
 
 // Initialize Game
 function initGame() {
   // Set up the game area
   const gameArea = document.getElementById('game-area');
   gameArea.innerHTML = '';
-  gameOver = false; // Reset gameOver flag
+  gameOver = false;
 
   if (!keepSettings) {
     // Game mode selection
     gameArea.innerHTML = `
       <button id="single-player">SINGLE</button>
       <button id="two-player">P V P</button>
+      <button id="train-mode">TRAIN</button>
     `;
 
     document.getElementById('single-player').addEventListener('click', () => {
@@ -452,6 +404,11 @@ function initGame() {
     document.getElementById('two-player').addEventListener('click', () => {
       gameMode = 'two-player';
       enterPlayerNames();
+    });
+
+    document.getElementById('train-mode').addEventListener('click', () => {
+      gameMode = 'train';
+      startTraining();
     });
   } else {
     startGame();
@@ -550,12 +507,14 @@ function startGame(player1Playstyle = null, player2Playstyle = null) {
   const opponentDeck = [...ALL_MOVES];
   shuffleArray(playerDeck);
   shuffleArray(opponentDeck);
-  gameOver = false; // Reset gameOver flag
+  gameOver = false;
 
-  if (gameMode === 'single') {
-    // Single Player Mode
-    const opponentPlaystyle =
-      playstyles[Math.floor(Math.random() * playstyles.length)];
+  if (gameMode === 'single' || gameMode === 'train') {
+    const opponentPlaystyle = [
+      'Knockout Artist',
+      'Submission Artist',
+      'Takedown Artist',
+    ][Math.floor(Math.random() * 3)];
     player = new Fighter(
       playerNames.player1,
       playerDeck,
@@ -572,7 +531,6 @@ function startGame(player1Playstyle = null, player2Playstyle = null) {
       gameDifficulty
     );
   } else {
-    // Two Player Mode
     player = new Fighter(
       playerNames.player1,
       playerDeck,
@@ -626,12 +584,10 @@ function setupGameInterface() {
   showMessage(`${currentPlayer.name}'s turn.`);
 
   if (!currentPlayer.isHuman) {
-    // AI's turn
     setTimeout(() => {
       aiTurn();
     }, 1000);
   } else {
-    // Player's turn
     addControlButtons();
   }
 }
@@ -642,6 +598,267 @@ function updateLatestMove(description) {
     <h2>Latest Move</h2>
     <div class="move-entry">${description}</div>
   `;
+}
+
+function playMove(index) {
+  if (gameOver) return;
+  const moveDescription = currentPlayer.playMove(index, currentOpponent);
+  if (moveDescription) {
+    updateStatus();
+    updatePosition();
+    updateHand();
+    const formattedDescription = formatMoveDescription(
+      moveDescription,
+      currentPlayer,
+      currentOpponent
+    );
+    updateMoveHistory(formattedDescription);
+    updateLatestMove(formattedDescription);
+    logAction(formattedDescription);
+
+    if (currentOpponent.submissionPending || currentOpponent.takedownPending) {
+      switchTurns(); // Allow opponent to respond
+    } else {
+      checkGameStatus();
+      if (!gameOver) {
+        switchTurns();
+      }
+    }
+  } else {
+    showMessage('Invalid move. Try again.');
+  }
+}
+
+function aiTurn() {
+  if (gameOver) return;
+
+  if (currentPlayer.submissionPending) {
+    handleSubmissionResponse();
+    return;
+  }
+
+  if (currentPlayer.takedownPending) {
+    handleTakedownDefense();
+    return;
+  }
+
+  const validMoves = currentPlayer.hand.filter((move) => {
+    return (
+      move.validPositions.includes(currentPlayer.position) &&
+      currentPlayer.stamina >= move.staminaCost &&
+      move.name !== 'Submission Escape' &&
+      move.name !== 'Sprawl'
+    );
+  });
+
+  if (validMoves.length === 0 || currentPlayer.isExhausted()) {
+    // AI decides to pass or replace cards
+    if (Math.random() < 0.5) {
+      // Pass to regain stamina
+      currentPlayer.stamina += 20;
+      currentPlayer.stamina = Math.min(100, currentPlayer.stamina);
+      showMessage(`${currentPlayer.name} passes and recovers stamina.`);
+      logAction(`${currentPlayer.name} passes and recovers stamina.`);
+      updateStatus();
+    } else {
+      // Replace cards
+      aiReplaceCards();
+    }
+    checkGameStatus();
+    if (!gameOver) {
+      switchTurns();
+    }
+  } else {
+    let move = aiSelectMove(currentPlayer, currentOpponent, validMoves);
+    const moveIndex = currentPlayer.hand.indexOf(move);
+    const moveDescription = currentPlayer.playMove(moveIndex, currentOpponent);
+    const formattedDescription = formatMoveDescription(
+      moveDescription,
+      currentPlayer,
+      currentOpponent
+    );
+    updateMoveHistory(formattedDescription);
+    updateLatestMove(formattedDescription);
+    logAction(formattedDescription);
+    showMessage(`${currentPlayer.name} uses ${move.name}.`);
+    updateStatus();
+    updatePosition();
+    updateHand();
+    if (currentOpponent.submissionPending || currentOpponent.takedownPending) {
+      switchTurns(); // Allow opponent to respond
+    } else {
+      checkGameStatus();
+      if (!gameOver) {
+        setTimeout(() => {
+          switchTurns();
+        }, 1000);
+      }
+    }
+  }
+}
+
+function updateHand() {
+  const handContainer = document.getElementById('hand-container');
+  handContainer.innerHTML = '';
+
+  if (gameMode === 'single' || gameMode === 'train') {
+    player.hand.forEach((move, index) => {
+      let isValid = false;
+
+      if (currentPlayer === player) {
+        if (currentPlayer.submissionPending) {
+          isValid = move.name === 'Submission Escape';
+        } else if (currentPlayer.takedownPending) {
+          isValid = move.name === 'Sprawl';
+        } else {
+          isValid =
+            move.validPositions.includes(player.position) &&
+            player.stamina >= move.staminaCost &&
+            move.name !== 'Submission Escape' &&
+            move.name !== 'Sprawl';
+        }
+      }
+
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.classList.add(isValid ? 'valid' : 'invalid');
+      card.innerHTML = `
+        <h3>${move.name}</h3>
+        ${move.damage > 0 ? `<p>Damage: ${move.damage}</p>` : ''}
+        <p>Stamina Cost: ${move.staminaCost}</p>
+        <p>Position: ${move.validPositions.join(', ') || 'Any'}</p>
+        <div class="tooltip">${move.description}</div>
+      `;
+      if (isValid && currentPlayer === player && !gameOver) {
+        card.addEventListener('click', () => {
+          if (gameOver) return;
+          playMove(index);
+        });
+      }
+      handContainer.appendChild(card);
+    });
+  } else if (gameMode === 'two-player') {
+    if (currentPlayer.isHuman) {
+      currentPlayer.hand.forEach((move, index) => {
+        let isValid = false;
+
+        if (currentPlayer.submissionPending) {
+          isValid = move.name === 'Submission Escape';
+        } else if (currentPlayer.takedownPending) {
+          isValid = move.name === 'Sprawl';
+        } else {
+          isValid =
+            move.validPositions.includes(currentPlayer.position) &&
+            currentPlayer.stamina >= move.staminaCost &&
+            move.name !== 'Submission Escape' &&
+            move.name !== 'Sprawl';
+        }
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.classList.add(isValid ? 'valid' : 'invalid');
+        card.innerHTML = `
+          <h3>${move.name}</h3>
+          ${move.damage > 0 ? `<p>Damage: ${move.damage}</p>` : ''}
+          <p>Stamina Cost: ${move.staminaCost}</p>
+          <p>Position: ${move.validPositions.join(', ') || 'Any'}</p>
+          <div class="tooltip">${move.description}</div>
+        `;
+        if (isValid && !gameOver) {
+          card.addEventListener('click', () => {
+            if (gameOver) return;
+            playMove(index);
+          });
+        }
+        handContainer.appendChild(card);
+      });
+    } else {
+      handContainer.innerHTML = `<p>${currentPlayer.name} is thinking...</p>`;
+    }
+  }
+}
+
+function addControlButtons() {
+  const controlButtons = document.getElementById('control-buttons');
+  controlButtons.innerHTML = '';
+
+  if (currentPlayer.isHuman) {
+    // Pass Button
+    const passButton = document.createElement('button');
+    passButton.textContent = 'Pass';
+    passButton.addEventListener('click', () => {
+      if (gameOver) return;
+      if (currentPlayer.submissionPending) {
+        // Accept the submission
+        currentPlayer.isSubmitted = true;
+        const moveDescription = `${currentOpponent.name} successfully submits ${currentPlayer.name}!`;
+        const formattedDescription = formatMoveDescription(
+          moveDescription,
+          currentOpponent,
+          currentPlayer
+        );
+        updateMoveHistory(formattedDescription);
+        updateLatestMove(formattedDescription);
+        logAction(formattedDescription);
+        checkGameStatus();
+      } else if (currentPlayer.takedownPending) {
+        // Allow takedown
+        const success = currentOpponent.attemptTakedown(currentPlayer);
+        if (success) {
+          currentPlayer.position = 'Ground';
+          currentOpponent.position = 'Ground';
+          const moveDescription = `${currentOpponent.name} successfully takes down ${currentPlayer.name}`;
+          const formattedDescription = formatMoveDescription(
+            moveDescription,
+            currentOpponent,
+            currentPlayer
+          );
+          updateMoveHistory(formattedDescription);
+          updateLatestMove(formattedDescription);
+          logAction(formattedDescription);
+        } else {
+          const moveDescription = `${currentOpponent.name}'s takedown attempt failed`;
+          const formattedDescription = formatMoveDescription(
+            moveDescription,
+            currentOpponent,
+            currentPlayer
+          );
+          updateMoveHistory(formattedDescription);
+          updateLatestMove(formattedDescription);
+          logAction(formattedDescription);
+        }
+        currentPlayer.takedownPending = false;
+        checkGameStatus();
+        if (!gameOver) {
+          switchTurns();
+        }
+      } else {
+        // Regular pass
+        currentPlayer.stamina += 20;
+        currentPlayer.stamina = Math.min(100, currentPlayer.stamina);
+        showMessage(`${currentPlayer.name} passes and recovers stamina.`);
+        updateStatus();
+        updateHand();
+        logAction(`${currentPlayer.name} passes and recovers stamina.`);
+        checkGameStatus();
+        if (!gameOver) {
+          switchTurns();
+        }
+      }
+    });
+    controlButtons.appendChild(passButton);
+
+    // Replace Button (only if not pending submission or takedown)
+    if (!currentPlayer.submissionPending && !currentPlayer.takedownPending) {
+      const replaceButton = document.createElement('button');
+      replaceButton.textContent = 'Replace Up to 2 Cards (-10 Stamina per card)';
+      replaceButton.addEventListener('click', () => {
+        if (gameOver) return;
+        replaceCards();
+      });
+      controlButtons.appendChild(replaceButton);
+    }
+  }
 }
 
 function updateStatus() {
@@ -678,124 +895,6 @@ function updatePosition() {
   positionDisplay.innerHTML = `<h2>Position: ${currentPlayer.position}</h2>`;
 }
 
-function updateHand() {
-  const handContainer = document.getElementById('hand-container');
-  handContainer.innerHTML = '';
-
-  if (gameMode === 'single') {
-    // Always display player's hand
-    player.hand.forEach((move, index) => {
-      let isValid;
-      if (currentPlayer.submissionPending) {
-        isValid = move.name === 'Submission Escape';
-      } else {
-        isValid =
-          move.validPositions.includes(currentPlayer.position) &&
-          currentPlayer.stamina >= move.staminaCost &&
-          (!move.isDefense || canPlayDefense(move));
-      }
-
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.classList.add(isValid ? 'valid' : 'invalid');
-      card.innerHTML = `
-        <h3>${move.name}</h3>
-        ${move.damage > 0 ? `<p>Damage: ${move.damage}</p>` : ''}
-        <p>Stamina Cost: ${move.staminaCost}</p>
-        <p>Position: ${move.validPositions.join(', ') || 'Any'}</p>
-        <div class="tooltip">${move.description}</div>
-      `;
-      if (isValid && currentPlayer === player && !gameOver) {
-        card.addEventListener('click', () => {
-          if (gameOver) return;
-          playMove(index);
-        });
-      }
-      handContainer.appendChild(card);
-    });
-  } else if (gameMode === 'two-player') {
-    if (currentPlayer.isHuman) {
-      currentPlayer.hand.forEach((move, index) => {
-        let isValid;
-        if (currentPlayer.submissionPending) {
-          isValid = move.name === 'Submission Escape';
-        } else {
-          isValid =
-            move.validPositions.includes(currentPlayer.position) &&
-            currentPlayer.stamina >= move.staminaCost &&
-            (!move.isDefense || canPlayDefense(move));
-        }
-
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.classList.add(isValid ? 'valid' : 'invalid');
-        card.innerHTML = `
-          <h3>${move.name}</h3>
-          ${move.damage > 0 ? `<p>Damage: ${move.damage}</p>` : ''}
-          <p>Stamina Cost: ${move.staminaCost}</p>
-          <p>Position: ${move.validPositions.join(', ') || 'Any'}</p>
-          <div class="tooltip">${move.description}</div>
-        `;
-        if (isValid && !gameOver) {
-          card.addEventListener('click', () => {
-            if (gameOver) return;
-            playMove(index);
-          });
-        }
-        handContainer.appendChild(card);
-      });
-    } else {
-      handContainer.innerHTML = `<p>${currentPlayer.name} is thinking...</p>`;
-    }
-  }
-}
-
-function canPlayDefense(move) {
-  if (move.name === 'Submission Escape') {
-    return currentPlayer.submissionPending;
-  }
-  return true;
-}
-
-function addControlButtons() {
-  const controlButtons = document.getElementById('control-buttons');
-  controlButtons.innerHTML = '';
-
-  // Pass Button
-  const passButton = document.createElement('button');
-  passButton.textContent = 'Pass';
-  passButton.addEventListener('click', () => {
-    if (gameOver) return;
-    if (currentPlayer.submissionPending) {
-      // Accept submission
-      processSubmissionResult(false);
-    } else {
-      currentPlayer.stamina += 20;
-      currentPlayer.stamina = Math.min(100, currentPlayer.stamina);
-      showMessage(`${currentPlayer.name} passes and recovers stamina.`);
-      updateStatus();
-      updateHand();
-      logAction(`${currentPlayer.name} passes and recovers stamina.`);
-      checkGameStatus();
-      if (!gameOver) {
-        switchTurns();
-      }
-    }
-  });
-  controlButtons.appendChild(passButton);
-
-  // Replace Button
-  if (!currentPlayer.submissionPending) {
-    const replaceButton = document.createElement('button');
-    replaceButton.textContent = 'Replace Up to 2 Cards (-5 Stamina per card)';
-    replaceButton.addEventListener('click', () => {
-      if (gameOver) return;
-      replaceCards();
-    });
-    controlButtons.appendChild(replaceButton);
-  }
-}
-
 function showMessage(message) {
   const messageBox = document.getElementById('message-box');
   messageBox.innerHTML = `<p>${message}</p>`;
@@ -818,47 +917,16 @@ function formatMoveDescription(description, actor, target) {
   const actorClass = actor.colorClass;
   const targetClass = target.colorClass;
 
-  // Replace actor and target names with colored spans
+  // Use word boundaries to match exact names
+  const actorNameRegex = new RegExp(`\\b${actor.name}\\b`, 'g');
+  const targetNameRegex = new RegExp(`\\b${target.name}\\b`, 'g');
+
   let formattedDescription = description
-    .replace(
-      new RegExp(`\\b${actor.name}\\b`, 'g'),
-      `<span class="${actorClass}">${actor.name}</span>`
-    )
-    .replace(
-      new RegExp(`\\b${target.name}\\b`, 'g'),
-      `<span class="${targetClass}">${target.name}</span>`
-    )
-    .replace(/(-\d+)/, `<span class="damage-text">$1</span>`);
+    .replace(actorNameRegex, `<span class="${actorClass}">${actor.name}</span>`)
+    .replace(targetNameRegex, `<span class="${targetClass}">${target.name}</span>`)
+    .replace(/(-\d+)/g, `<span class="damage-text">$1</span>`);
 
   return formattedDescription;
-}
-
-function playMove(index) {
-  if (gameOver) return;
-  const moveDescription = currentPlayer.playMove(index, currentOpponent);
-  if (moveDescription) {
-    updateStatus();
-    updatePosition();
-    updateHand();
-    const formattedDescription = formatMoveDescription(
-      moveDescription,
-      currentPlayer,
-      currentOpponent
-    );
-    updateMoveHistory(formattedDescription);
-    updateLatestMove(formattedDescription);
-    logAction(formattedDescription);
-    if (currentOpponent.submissionPending) {
-      switchTurns(); // Allow opponent to respond
-    } else {
-      checkGameStatus();
-      if (!gameOver && !currentPlayer.submissionPending) {
-        switchTurns();
-      }
-    }
-  } else {
-    showMessage('Invalid move. Try again.');
-  }
 }
 
 function handleSubmissionResponse() {
@@ -895,15 +963,6 @@ function handleSubmissionResponse() {
       }
     } else {
       // AI accepts the submission attempt
-      processSubmissionResult(false);
-    }
-  }
-}
-
-function processSubmissionResult(isEscaped) {
-  if (!isEscaped) {
-    const success = currentOpponent.attemptSubmission(currentPlayer);
-    if (success) {
       currentPlayer.isSubmitted = true;
       const moveDescription = `${currentOpponent.name} successfully submits ${currentPlayer.name}!`;
       const formattedDescription = formatMoveDescription(
@@ -914,126 +973,70 @@ function processSubmissionResult(isEscaped) {
       updateMoveHistory(formattedDescription);
       updateLatestMove(formattedDescription);
       logAction(formattedDescription);
-      currentPlayer.submissionPending = false;
       checkGameStatus();
-    } else {
-      const moveDescription = `${currentOpponent.name}'s submission attempt failed`;
-      const formattedDescription = formatMoveDescription(
-        moveDescription,
-        currentOpponent,
-        currentPlayer
-      );
-      updateMoveHistory(formattedDescription);
-      updateLatestMove(formattedDescription);
-      logAction(formattedDescription);
-      showMessage(`Submission attempt failed.`);
-      currentPlayer.submissionPending = false;
-      checkGameStatus();
-      if (!gameOver) {
-        switchTurns();
-      }
     }
   }
 }
 
-function aiTurn() {
-  if (gameOver) return;
-
-  if (currentPlayer.submissionPending) {
-    handleSubmissionResponse();
-    return;
-  }
-
-  const validMoves = currentPlayer.hand.filter((move) => {
-    if (currentPlayer.submissionPending) {
-      return move.name === 'Submission Escape';
-    }
-    return (
-      move.validPositions.includes(currentPlayer.position) &&
-      currentPlayer.stamina >= move.staminaCost &&
-      (!move.isDefense || canPlayDefense(move))
+function handleTakedownDefense() {
+  if (currentPlayer.isHuman) {
+    showMessage(
+      `${currentPlayer.name}, your opponent is attempting a takedown. You can play 'Sprawl' from your hand to defend or 'Pass' to allow the takedown.`
     );
-  });
-
-  if (validMoves.length === 0 || currentPlayer.isExhausted()) {
-    // AI decides to pass or replace cards
-    if (Math.random() < 0.5) {
-      // Pass to regain stamina
-      currentPlayer.stamina += 20;
-      currentPlayer.stamina = Math.min(100, currentPlayer.stamina);
-      showMessage(`${currentPlayer.name} passes and recovers stamina.`);
-      logAction(`${currentPlayer.name} passes and recovers stamina.`);
-      updateStatus();
-      updateLatestMove(`${currentPlayer.name} passes and recovers stamina.`);
+    updateHand();
+    addControlButtons();
+  } else {
+    // AI's response to takedown
+    const sprawlIndex = currentPlayer.hand.findIndex(
+      (move) => move.name === 'Sprawl'
+    );
+    if (sprawlIndex !== -1) {
+      // AI uses Sprawl
+      const moveDescription = currentPlayer.playMove(
+        sprawlIndex,
+        currentOpponent
+      );
+      const formattedDescription = formatMoveDescription(
+        moveDescription,
+        currentPlayer,
+        currentOpponent
+      );
+      updateMoveHistory(formattedDescription);
+      updateLatestMove(formattedDescription);
+      logAction(formattedDescription);
     } else {
-      // Replace cards
-      aiReplaceCards();
+      // AI allows the takedown
+      const success = currentOpponent.attemptTakedown(currentPlayer);
+      if (success) {
+        currentPlayer.position = 'Ground';
+        currentOpponent.position = 'Ground';
+        const moveDescription = `${currentOpponent.name} successfully takes down ${currentPlayer.name}`;
+        const formattedDescription = formatMoveDescription(
+          moveDescription,
+          currentOpponent,
+          currentPlayer
+        );
+        updateMoveHistory(formattedDescription);
+        updateLatestMove(formattedDescription);
+        logAction(formattedDescription);
+      } else {
+        const moveDescription = `${currentOpponent.name}'s takedown attempt failed`;
+        const formattedDescription = formatMoveDescription(
+          moveDescription,
+          currentOpponent,
+          currentPlayer
+        );
+        updateMoveHistory(formattedDescription);
+        updateLatestMove(formattedDescription);
+        logAction(formattedDescription);
+      }
+      currentPlayer.takedownPending = false;
     }
     checkGameStatus();
     if (!gameOver) {
       switchTurns();
     }
-  } else {
-    let move;
-    if (currentPlayer.difficulty === 'Easy') {
-      move = validMoves[Math.floor(Math.random() * validMoves.length)];
-    } else if (currentPlayer.difficulty === 'Medium') {
-      if (currentOpponent.health <= 30) {
-        const strikes = validMoves.filter((m) => m.type === 'strike');
-        move = strikes.length > 0 ? strikes[0] : validMoves[0];
-      } else {
-        move = validMoves[0];
-      }
-    } else {
-      move = aiSelectMove(currentPlayer, currentOpponent, validMoves);
-    }
-    const moveIndex = currentPlayer.hand.indexOf(move);
-    const moveDescription = currentPlayer.playMove(moveIndex, currentOpponent);
-    const formattedDescription = formatMoveDescription(
-      moveDescription,
-      currentPlayer,
-      currentOpponent
-    );
-    updateMoveHistory(formattedDescription);
-    updateLatestMove(formattedDescription);
-    logAction(formattedDescription);
-    showMessage(`${currentPlayer.name} uses ${move.name}.`);
-    updateStatus();
-    updatePosition();
-    updateHand();
-    if (currentOpponent.submissionPending) {
-      switchTurns(); // Allow opponent to respond
-    } else {
-      checkGameStatus();
-      if (!gameOver) {
-        setTimeout(() => {
-          switchTurns();
-        }, 1000);
-      }
-    }
   }
-}
-
-function aiReplaceCards() {
-  // AI replaces up to 2 cards
-  let replaceCount = 0;
-  for (let i = 0; i < currentPlayer.hand.length; i++) {
-    if (replaceCount >= 2) break;
-    const move = currentPlayer.hand[i];
-    if (
-      !move.validPositions.includes(currentPlayer.position) ||
-      currentPlayer.stamina < move.staminaCost
-    ) {
-      currentPlayer.discardPile.push(currentPlayer.hand.splice(i, 1)[0]);
-      currentPlayer.drawCard();
-      replaceCount++;
-      i--;
-    }
-  }
-  currentPlayer.stamina -= replaceCount * 5;
-  showMessage(`${currentPlayer.name} replaces ${replaceCount} card(s).`);
-  logAction(`${currentPlayer.name} replaces ${replaceCount} card(s).`);
-  updateHand();
 }
 
 function switchTurns() {
@@ -1043,7 +1046,6 @@ function switchTurns() {
   updateHand();
 
   if (!currentPlayer.isHuman) {
-    // AI's turn
     const controlButtons = document.getElementById('control-buttons');
     controlButtons.innerHTML = '';
     setTimeout(() => {
@@ -1053,6 +1055,8 @@ function switchTurns() {
     addControlButtons();
     if (currentPlayer.submissionPending) {
       handleSubmissionResponse();
+    } else if (currentPlayer.takedownPending) {
+      handleTakedownDefense();
     }
   }
 }
@@ -1067,10 +1071,12 @@ function replaceCards() {
 
   function handleCardClick(index) {
     if (replaceCount < 2) {
-      currentPlayer.discardPile.push(currentPlayer.hand.splice(index, 1)[0]);
+      const card = currentPlayer.hand.splice(index, 1)[0];
+      currentPlayer.discardPile.push(card);
       currentPlayer.drawCard();
       replaceCount++;
-      currentPlayer.stamina -= 5;
+      currentPlayer.stamina -= 10; // Increased cost
+      currentPlayer.stamina = Math.max(0, currentPlayer.stamina); // Prevent negative stamina
       updateHandForReplacement();
       showMessage(`${currentPlayer.name} replaced ${replaceCount} card(s).`);
       if (replaceCount === 2) {
@@ -1168,41 +1174,82 @@ function logAction(action) {
   console.log(action);
 }
 
-function aiSelectMove(aiPlayer, opponent, validMoves) {
-  // AI selects the best move based on various factors
-  // Prioritize submissions if opponent's stamina is low and AI is a Submission Artist
-  if (aiPlayer.playstyle === 'Submission Artist' && aiPlayer.stamina >= 20) {
-    const submissions = validMoves.filter((move) => move.type === 'submission');
-    if (submissions.length > 0) {
-      return submissions[Math.floor(Math.random() * submissions.length)];
+function aiReplaceCards() {
+  // AI replaces up to 2 cards
+  let replaceCount = 0;
+  for (let i = 0; i < currentPlayer.hand.length; i++) {
+    if (replaceCount >= 2) break;
+    const move = currentPlayer.hand[i];
+    if (
+      !move.validPositions.includes(currentPlayer.position) ||
+      currentPlayer.stamina < move.staminaCost ||
+      move.name === 'Submission Escape' ||
+      move.name === 'Sprawl'
+    ) {
+      currentPlayer.discardPile.push(currentPlayer.hand.splice(i, 1)[0]);
+      currentPlayer.drawCard();
+      replaceCount++;
+      i--;
     }
   }
-  // Prioritize strikes if opponent's health is low
-  if (opponent.health < 30) {
+  currentPlayer.stamina -= replaceCount * 10; // Increased cost
+  currentPlayer.stamina = Math.max(0, currentPlayer.stamina); // Prevent negative stamina
+  showMessage(`${currentPlayer.name} replaces ${replaceCount} card(s).`);
+  logAction(`${currentPlayer.name} replaces ${replaceCount} card(s).`);
+  updateHand();
+}
+
+function aiSelectMove(aiPlayer, opponent, validMoves) {
+  // Simple AI logic based on playstyle and current position
+  if (aiPlayer.playstyle === 'Knockout Artist') {
     const strikes = validMoves.filter((move) => move.type === 'strike');
     if (strikes.length > 0) {
       return strikes[Math.floor(Math.random() * strikes.length)];
     }
   }
-  // Use takedowns if AI is a Takedown Artist
-  if (aiPlayer.playstyle === 'Takedown Artist' && aiPlayer.position !== 'Ground') {
+
+  if (aiPlayer.playstyle === 'Takedown Artist') {
     const takedowns = validMoves.filter((move) => move.type === 'takedown');
     if (takedowns.length > 0) {
       return takedowns[Math.floor(Math.random() * takedowns.length)];
     }
   }
-  // Default to strikes
-  const strikes = validMoves.filter((move) => move.type === 'strike');
-  if (strikes.length > 0) {
-    return strikes[Math.floor(Math.random() * strikes.length)];
+
+  if (aiPlayer.playstyle === 'Submission Artist') {
+    const submissions = validMoves.filter((move) => move.type === 'submission');
+    if (submissions.length > 0) {
+      return submissions[Math.floor(Math.random() * submissions.length)];
+    }
   }
-  // Use position changes if available
-  const positions = validMoves.filter((move) => move.type === 'position');
-  if (positions.length > 0) {
-    return positions[Math.floor(Math.random() * positions.length)];
-  }
-  // Otherwise, choose any valid move
+
+  // Default to any valid move
   return validMoves[Math.floor(Math.random() * validMoves.length)];
+}
+
+function startTraining() {
+  playerNames = { player1: 'Player', player2: 'Trainer' };
+  gameDifficulty = 'Easy';
+  startGame('Knockout Artist', 'Takedown Artist');
+  showTrainingMessages();
+}
+
+function showTrainingMessages() {
+  // Implement a simple tutorial
+  const messages = [
+    'Welcome to the training mode!',
+    'In this game, your objective is to defeat your opponent by reducing their health to zero or submitting them.',
+    'You have various moves in your hand that you can play during your turn.',
+    'Let\'s start by playing a strike move like "Punch" or "Kick". Click on a valid card to play it.',
+  ];
+  let index = 0;
+  function nextMessage() {
+    if (index < messages.length) {
+      showMessage(messages[index]);
+      index++;
+    }
+  }
+  nextMessage();
+  // Call nextMessage() at appropriate times during the training.
 }
 
 // Start the game
