@@ -11,7 +11,16 @@ function shuffleArray(array) {
 
 // Move Class
 class Move {
-  constructor(name, damage, staminaCost, moveType, validPositions, newPosition = null, isDefense = false, description = '') {
+  constructor(
+    name,
+    damage,
+    staminaCost,
+    moveType,
+    validPositions,
+    newPosition = null,
+    isDefense = false,
+    description = ''
+  ) {
     this.name = name;
     this.damage = damage;
     this.staminaCost = staminaCost;
@@ -27,37 +36,197 @@ class Move {
   }
 }
 
-// Define all possible moves with corrected valid positions and simplified names
+// Define all possible moves
 const ALL_MOVES = [
   // Moves valid in Open and Clinch positions
-  new Move('Punch', 10, 4, 'strike', ['Open', 'Clinch'], null, false, 'A quick punch to the opponent.'),
-  new Move('Kick', 15, 6, 'strike', ['Open', 'Clinch'], null, false, 'A powerful kick aimed at the opponent.'),
-  new Move('Elbow', 8, 7, 'strike', ['Clinch'], null, false, 'An elbow strike in close quarters.'),
-  new Move('Knee', 10, 8, 'strike', ['Clinch'], null, false, 'A knee strike targeting the body.'),
+  new Move(
+    'Punch',
+    10,
+    4,
+    'strike',
+    ['Open', 'Clinch'],
+    null,
+    false,
+    'A quick punch to the opponent.'
+  ),
+  new Move(
+    'Kick',
+    15,
+    6,
+    'strike',
+    ['Open', 'Clinch'],
+    null,
+    false,
+    'A powerful kick aimed at the opponent.'
+  ),
+  new Move(
+    'Elbow',
+    8,
+    7,
+    'strike',
+    ['Clinch'],
+    null,
+    false,
+    'An elbow strike in close quarters.'
+  ),
+  new Move(
+    'Knee',
+    10,
+    8,
+    'strike',
+    ['Clinch'],
+    null,
+    false,
+    'A knee strike targeting the body.'
+  ),
   // Takedowns valid in Open and Clinch positions
-  new Move('Takedown', 0, 8, 'takedown', ['Open', 'Clinch'], 'Ground', false, 'Attempt a takedown to bring the fight to the ground.'),
+  new Move(
+    'Takedown',
+    0,
+    8,
+    'takedown',
+    ['Open', 'Clinch'],
+    'Ground',
+    false,
+    'Attempt a takedown to bring the fight to the ground.'
+  ),
   // Position changes
-  new Move('Initiate Clinch', 0, 4, 'position', ['Open'], 'Clinch', false, 'Close the distance to clinch.'),
-  new Move('Break Clinch', 0, 4, 'position', ['Clinch'], 'Open', false, 'Break the clinch and create distance.'),
+  new Move(
+    'Initiate Clinch',
+    0,
+    4,
+    'position',
+    ['Open'],
+    'Clinch',
+    false,
+    'Close the distance to clinch.'
+  ),
+  new Move(
+    'Break Clinch',
+    0,
+    4,
+    'position',
+    ['Clinch'],
+    'Open',
+    false,
+    'Break the clinch and create distance.'
+  ),
   // Ground Position Moves valid only in Ground position
-  new Move('Elbow Smash', 10, 5, 'strike', ['Ground'], null, false, 'A powerful elbow strike on the ground.'),
-  new Move('Ground Punch', 8, 4, 'strike', ['Ground'], null, false, 'Punch the opponent on the ground.'),
-  new Move('Chokehold', 0, 8, 'submission', ['Ground'], null, false, 'Attempt a choke submission.'),
-  new Move('Armbar', 0, 8, 'submission', ['Ground'], null, false, 'Attempt an armbar submission.'),
-  new Move('Leglock', 0, 8, 'submission', ['Ground'], null, false, 'Attempt a leglock submission.'),
-  new Move('Stand Up', 0, 4, 'position', ['Ground'], 'Open', false, 'Stand up from the ground.'),
+  new Move(
+    'Elbow Smash',
+    10,
+    5,
+    'strike',
+    ['Ground'],
+    null,
+    false,
+    'A powerful elbow strike on the ground.'
+  ),
+  new Move(
+    'Ground Punch',
+    8,
+    4,
+    'strike',
+    ['Ground'],
+    null,
+    false,
+    'Punch the opponent on the ground.'
+  ),
+  new Move(
+    'Chokehold',
+    0,
+    8,
+    'submission',
+    ['Ground'],
+    null,
+    false,
+    'Attempt a choke submission.'
+  ),
+  new Move(
+    'Armbar',
+    0,
+    8,
+    'submission',
+    ['Ground'],
+    null,
+    false,
+    'Attempt an armbar submission.'
+  ),
+  new Move(
+    'Leglock',
+    0,
+    8,
+    'submission',
+    ['Ground'],
+    null,
+    false,
+    'Attempt a leglock submission.'
+  ),
+  new Move(
+    'Stand Up',
+    0,
+    4,
+    'position',
+    ['Ground'],
+    'Open',
+    false,
+    'Stand up from the ground.'
+  ),
   // Defense Cards
-  new Move('Submission Escape', 0, 4, 'defense', [], null, true, 'Escape an attempted submission.'),
-  new Move('Position Reversal', 0, 6, 'defense', [], 'Clinch', true, 'Reverse the position to clinch.'),
-  new Move('Guard', 0, 3, 'defense', [], null, true, 'Defend against strikes.'),
+  new Move(
+    'Submission Escape',
+    0,
+    4,
+    'defense',
+    ['Open', 'Clinch', 'Ground'],
+    null,
+    true,
+    'Escape an attempted submission.'
+  ),
+  new Move(
+    'Position Reversal',
+    0,
+    6,
+    'defense',
+    ['Open', 'Clinch', 'Ground'],
+    'Clinch',
+    true,
+    'Reverse the position to clinch.'
+  ),
+  new Move(
+    'Guard',
+    0,
+    3,
+    'defense',
+    ['Open', 'Clinch', 'Ground'],
+    null,
+    true,
+    'Defend against strikes.'
+  ),
   // New Defensive Card
-  new Move('Full Mount', 0, 7, 'defense', ['Ground'], 'Ground', true, 'Gain an advantageous position.'),
+  new Move(
+    'Full Mount',
+    0,
+    7,
+    'defense',
+    ['Ground'],
+    'Ground',
+    true,
+    'Gain an advantageous position.'
+  ),
 ];
 
 const MAX_HAND_SIZE = 5;
 
 class Fighter {
-  constructor(name, deck, playstyle, colorClass, isHuman = false, difficulty = 'Medium') {
+  constructor(
+    name,
+    deck,
+    playstyle,
+    colorClass,
+    isHuman = false,
+    difficulty = 'Medium'
+  ) {
     this.name = name;
     this.health = 100; // Max health
     this.stamina = 100; // Max stamina
@@ -104,7 +273,9 @@ class Fighter {
 
     // Check if move is valid
     if (!move.validPositions.includes(this.position)) {
-      console.log(`${this.name} cannot perform ${move.name} from ${this.position} position.`);
+      console.log(
+        `${this.name} cannot perform ${move.name} from ${this.position} position.`
+      );
       return false;
     }
 
@@ -117,14 +288,18 @@ class Fighter {
       staminaCost = Math.max(staminaCost - 1, 1); // Slight stamina reduction for strikes
     }
     if (this.stamina < staminaCost) {
-      console.log(`${this.name} does not have enough stamina to perform ${move.name}.`);
+      console.log(
+        `${this.name} does not have enough stamina to perform ${move.name}.`
+      );
       return false;
     }
 
     // Specific logic for submissions
     if (move.type === 'submission') {
       if (this.stamina < 20 && this.playstyle !== 'Submission Artist') {
-        console.log(`${this.name} does not have enough stamina to attempt a submission.`);
+        console.log(
+          `${this.name} does not have enough stamina to attempt a submission.`
+        );
         return false;
       }
       opponent.submissionPending = true; // Set submission pending on opponent
@@ -142,7 +317,7 @@ class Fighter {
         damage += 2; // Knockout Artist deals extra damage with strikes
       }
       opponent.receiveDamage(damage);
-      moveDescription = `${this.name} ${move.name.toLowerCase()}s ${opponent.name} (-${damage})`;
+      moveDescription = `${this.name} uses ${move.name} on ${opponent.name} (-${damage})`;
     } else if (move.type === 'takedown') {
       const success = this.attemptTakedown(opponent);
       if (success) {
@@ -155,9 +330,7 @@ class Fighter {
       }
     } else if (move.type === 'submission') {
       moveDescription = `${this.name} attempts ${move.name} on ${opponent.name}`;
-      // Switch turns to allow opponent to respond
-      switchTurns();
-      return moveDescription;
+      // Do not switch turns here; opponent responds
     } else if (move.type === 'position') {
       const newPosition = move.newPosition;
       this.position = newPosition;
@@ -267,9 +440,8 @@ function initGame() {
   if (!keepSettings) {
     // Game mode selection
     gameArea.innerHTML = `
-      <h2>Select Mode</h2>
-      <button id="single-player">Single</button>
-      <button id="two-player">PvP</button>
+      <button id="single-player">SINGLE</button>
+      <button id="two-player">P V P</button>
     `;
 
     document.getElementById('single-player').addEventListener('click', () => {
@@ -296,18 +468,20 @@ document.getElementById('title-link').addEventListener('click', (e) => {
 function enterPlayerNames() {
   const gameArea = document.getElementById('game-area');
   gameArea.innerHTML = `
-    <h2>Enter Player Names</h2>
-    <input type="text" id="player1-name" placeholder="Player 1 Name" required />
+    <input type="text" id="player1-name" placeholder="Enter Player 1's Name" required />
     ${
       gameMode === 'two-player'
-        ? '<input type="text" id="player2-name" placeholder="Player 2 Name" required />'
+        ? `<input type="text" id="player2-name" placeholder="Enter Player 2's Name" required />`
         : ''
     }
     <button id="submit-names">Continue</button>
   `;
 
+  document.getElementById('player1-name').focus();
+
   document.getElementById('submit-names').addEventListener('click', () => {
-    const player1Name = document.getElementById('player1-name').value || 'Player 1';
+    const player1Name =
+      document.getElementById('player1-name').value || 'Player 1';
     const player2Name =
       gameMode === 'two-player'
         ? document.getElementById('player2-name').value || 'Player 2'
@@ -319,30 +493,19 @@ function enterPlayerNames() {
 
 function selectPlaystyle() {
   const gameArea = document.getElementById('game-area');
-  gameArea.innerHTML = '';
-
-  // Player 1 Playstyle
-  let playstyleOptions = playstyles
-    .map(
-      (style, index) =>
-        `<button class="playstyle-btn" data-index="${index}">${style}</button>`
-    )
-    .join('');
-
   gameArea.innerHTML = `
-    <h2>${playerNames.player1}: Select Playstyle</h2>
-    <div>${playstyleOptions}</div>
+    <h2>${playerNames.player1}, choose your playstyle:</h2>
+    <button class="playstyle-btn" data-playstyle="Knockout Artist">KNOCKOUT ARTIST</button>
+    <button class="playstyle-btn" data-playstyle="Takedown Artist">TAKEDOWN ARTIST</button>
+    <button class="playstyle-btn" data-playstyle="Submission Artist">SUBMISSION ARTIST</button>
   `;
 
   document.querySelectorAll('.playstyle-btn').forEach((button) => {
     button.addEventListener('click', () => {
-      const index = button.getAttribute('data-index');
-      const player1Playstyle = playstyles[index];
+      const player1Playstyle = button.getAttribute('data-playstyle');
       if (gameMode === 'single') {
-        // Single Player Mode
         selectDifficulty(player1Playstyle);
       } else {
-        // Two Player Mode
         selectPlaystylePlayer2(player1Playstyle);
       }
     });
@@ -351,24 +514,16 @@ function selectPlaystyle() {
 
 function selectPlaystylePlayer2(player1Playstyle) {
   const gameArea = document.getElementById('game-area');
-  gameArea.innerHTML = '';
-
-  let playstyleOptions = playstyles
-    .map(
-      (style, index) =>
-        `<button class="playstyle-btn" data-index="${index}">${style}</button>`
-    )
-    .join('');
-
   gameArea.innerHTML = `
-    <h2>${playerNames.player2}: Select Playstyle</h2>
-    <div>${playstyleOptions}</div>
+    <h2>${playerNames.player2}, choose your playstyle:</h2>
+    <button class="playstyle-btn" data-playstyle="Knockout Artist">KNOCKOUT ARTIST</button>
+    <button class="playstyle-btn" data-playstyle="Takedown Artist">TAKEDOWN ARTIST</button>
+    <button class="playstyle-btn" data-playstyle="Submission Artist">SUBMISSION ARTIST</button>
   `;
 
   document.querySelectorAll('.playstyle-btn').forEach((button) => {
     button.addEventListener('click', () => {
-      const index = button.getAttribute('data-index');
-      const player2Playstyle = playstyles[index];
+      const player2Playstyle = button.getAttribute('data-playstyle');
       startGame(player1Playstyle, player2Playstyle);
     });
   });
@@ -376,18 +531,10 @@ function selectPlaystylePlayer2(player1Playstyle) {
 
 function selectDifficulty(player1Playstyle) {
   const gameArea = document.getElementById('game-area');
-  gameArea.innerHTML = '';
-
-  let difficultyOptions = ['Easy', 'Medium', 'Hard']
-    .map(
-      (diff) =>
-        `<button class="difficulty-btn" data-difficulty="${diff}">${diff}</button>`
-    )
-    .join('');
-
   gameArea.innerHTML = `
-    <h2>Select Difficulty</h2>
-    <div>${difficultyOptions}</div>
+    <button class="difficulty-btn" data-difficulty="Easy">EASY</button>
+    <button class="difficulty-btn" data-difficulty="Medium">MEDIUM</button>
+    <button class="difficulty-btn" data-difficulty="Hard">HARD</button>
   `;
 
   document.querySelectorAll('.difficulty-btn').forEach((button) => {
@@ -417,7 +564,7 @@ function startGame(player1Playstyle = null, player2Playstyle = null) {
       true
     );
     opponent = new Fighter(
-      playerNames.player2,
+      'Opponent',
       opponentDeck,
       opponentPlaystyle,
       'player-blue',
@@ -451,20 +598,25 @@ function startGame(player1Playstyle = null, player2Playstyle = null) {
 function setupGameInterface() {
   const gameArea = document.getElementById('game-area');
   gameArea.innerHTML = `
-    <div id="main-game">
-      <div class="status-bar">
-        <div id="player-status" class="status"></div>
-        <div id="opponent-status" class="status"></div>
+    <div id="game-content">
+      <div id="latest-move">
+        <h2>Latest Move</h2>
+        <div class="move-entry">No moves yet.</div>
       </div>
-      <div id="position-display"></div>
-      <div id="recent-moves"></div>
-      <div id="hand-container"></div>
-      <div id="control-buttons"></div>
-      <div id="message-box"></div>
-    </div>
-    <div id="highlights-container">
-      <h2>Highlights</h2>
-      <div id="move-history"></div>
+      <div id="main-game">
+        <div class="status-bar">
+          <div id="player-status" class="status"></div>
+          <div id="opponent-status" class="status"></div>
+        </div>
+        <div id="position-display"></div>
+        <div id="hand-container"></div>
+        <div id="control-buttons"></div>
+        <div id="message-box"></div>
+      </div>
+      <div id="highlights-container">
+        <h2>Highlights</h2>
+        <div id="move-history"></div>
+      </div>
     </div>
   `;
 
@@ -482,6 +634,14 @@ function setupGameInterface() {
     // Player's turn
     addControlButtons();
   }
+}
+
+function updateLatestMove(description) {
+  const latestMoveContainer = document.getElementById('latest-move');
+  latestMoveContainer.innerHTML = `
+    <h2>Latest Move</h2>
+    <div class="move-entry">${description}</div>
+  `;
 }
 
 function updateStatus() {
@@ -515,19 +675,25 @@ function updateStatus() {
 
 function updatePosition() {
   const positionDisplay = document.getElementById('position-display');
-  positionDisplay.innerHTML = `<h2>Position: ${player.position}</h2>`;
+  positionDisplay.innerHTML = `<h2>Position: ${currentPlayer.position}</h2>`;
 }
 
 function updateHand() {
   const handContainer = document.getElementById('hand-container');
   handContainer.innerHTML = '';
 
-  if (currentPlayer.isHuman) {
-    currentPlayer.hand.forEach((move, index) => {
-      const isValid =
-        move.validPositions.includes(currentPlayer.position) &&
-        currentPlayer.stamina >= move.staminaCost &&
-        (!move.isDefense || (move.isDefense && canPlayDefense(move)));
+  if (gameMode === 'single') {
+    // Always display player's hand
+    player.hand.forEach((move, index) => {
+      let isValid;
+      if (currentPlayer.submissionPending) {
+        isValid = move.name === 'Submission Escape';
+      } else {
+        isValid =
+          move.validPositions.includes(currentPlayer.position) &&
+          currentPlayer.stamina >= move.staminaCost &&
+          (!move.isDefense || canPlayDefense(move));
+      }
 
       const card = document.createElement('div');
       card.className = 'card';
@@ -535,11 +701,11 @@ function updateHand() {
       card.innerHTML = `
         <h3>${move.name}</h3>
         ${move.damage > 0 ? `<p>Damage: ${move.damage}</p>` : ''}
-        <p>Stamina: -${move.staminaCost}</p>
+        <p>Stamina Cost: ${move.staminaCost}</p>
         <p>Position: ${move.validPositions.join(', ') || 'Any'}</p>
         <div class="tooltip">${move.description}</div>
       `;
-      if (isValid) {
+      if (isValid && currentPlayer === player && !gameOver) {
         card.addEventListener('click', () => {
           if (gameOver) return;
           playMove(index);
@@ -547,8 +713,40 @@ function updateHand() {
       }
       handContainer.appendChild(card);
     });
-  } else {
-    handContainer.innerHTML = `<p>${currentPlayer.name} is thinking...</p>`;
+  } else if (gameMode === 'two-player') {
+    if (currentPlayer.isHuman) {
+      currentPlayer.hand.forEach((move, index) => {
+        let isValid;
+        if (currentPlayer.submissionPending) {
+          isValid = move.name === 'Submission Escape';
+        } else {
+          isValid =
+            move.validPositions.includes(currentPlayer.position) &&
+            currentPlayer.stamina >= move.staminaCost &&
+            (!move.isDefense || canPlayDefense(move));
+        }
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.classList.add(isValid ? 'valid' : 'invalid');
+        card.innerHTML = `
+          <h3>${move.name}</h3>
+          ${move.damage > 0 ? `<p>Damage: ${move.damage}</p>` : ''}
+          <p>Stamina Cost: ${move.staminaCost}</p>
+          <p>Position: ${move.validPositions.join(', ') || 'Any'}</p>
+          <div class="tooltip">${move.description}</div>
+        `;
+        if (isValid && !gameOver) {
+          card.addEventListener('click', () => {
+            if (gameOver) return;
+            playMove(index);
+          });
+        }
+        handContainer.appendChild(card);
+      });
+    } else {
+      handContainer.innerHTML = `<p>${currentPlayer.name} is thinking...</p>`;
+    }
   }
 }
 
@@ -565,7 +763,7 @@ function addControlButtons() {
 
   // Pass Button
   const passButton = document.createElement('button');
-  passButton.textContent = 'Pass (Gain +20 Stamina)';
+  passButton.textContent = 'Pass';
   passButton.addEventListener('click', () => {
     if (gameOver) return;
     if (currentPlayer.submissionPending) {
@@ -622,8 +820,14 @@ function formatMoveDescription(description, actor, target) {
 
   // Replace actor and target names with colored spans
   let formattedDescription = description
-    .replace(actor.name, `<span class="${actorClass}">${actor.name}</span>`)
-    .replace(target.name, `<span class="${targetClass}">${target.name}</span>`)
+    .replace(
+      new RegExp(`\\b${actor.name}\\b`, 'g'),
+      `<span class="${actorClass}">${actor.name}</span>`
+    )
+    .replace(
+      new RegExp(`\\b${target.name}\\b`, 'g'),
+      `<span class="${targetClass}">${target.name}</span>`
+    )
     .replace(/(-\d+)/, `<span class="damage-text">$1</span>`);
 
   return formattedDescription;
@@ -642,10 +846,10 @@ function playMove(index) {
       currentOpponent
     );
     updateMoveHistory(formattedDescription);
+    updateLatestMove(formattedDescription);
     logAction(formattedDescription);
-    updateRecentMoves(moveDescription, currentPlayer);
-    if (!currentPlayer.isHuman && currentPlayer.submissionPending) {
-      handleSubmissionResponse();
+    if (currentOpponent.submissionPending) {
+      switchTurns(); // Allow opponent to respond
     } else {
       checkGameStatus();
       if (!gameOver && !currentPlayer.submissionPending) {
@@ -655,16 +859,6 @@ function playMove(index) {
   } else {
     showMessage('Invalid move. Try again.');
   }
-}
-
-function updateRecentMoves(description, actor) {
-  const recentMoves = document.getElementById('recent-moves');
-  recentMoves.innerHTML = `
-    <div class="recent-card">
-      <h3>${actor.name}'s Move</h3>
-      <p>${description}</p>
-    </div>
-  `;
 }
 
 function handleSubmissionResponse() {
@@ -691,9 +885,9 @@ function handleSubmissionResponse() {
         currentOpponent
       );
       updateMoveHistory(formattedDescription);
+      updateLatestMove(formattedDescription);
       logAction(formattedDescription);
       showMessage(`${currentPlayer.name} escapes the submission!`);
-      updateRecentMoves(moveDescription, currentPlayer);
       currentPlayer.submissionPending = false;
       checkGameStatus();
       if (!gameOver) {
@@ -718,8 +912,8 @@ function processSubmissionResult(isEscaped) {
         currentPlayer
       );
       updateMoveHistory(formattedDescription);
+      updateLatestMove(formattedDescription);
       logAction(formattedDescription);
-      updateRecentMoves(moveDescription, currentOpponent);
       currentPlayer.submissionPending = false;
       checkGameStatus();
     } else {
@@ -730,10 +924,10 @@ function processSubmissionResult(isEscaped) {
         currentPlayer
       );
       updateMoveHistory(formattedDescription);
+      updateLatestMove(formattedDescription);
       logAction(formattedDescription);
       showMessage(`Submission attempt failed.`);
       currentPlayer.submissionPending = false;
-      updateRecentMoves(moveDescription, currentOpponent);
       checkGameStatus();
       if (!gameOver) {
         switchTurns();
@@ -750,12 +944,16 @@ function aiTurn() {
     return;
   }
 
-  const validMoves = currentPlayer.hand.filter(
-    (move) =>
+  const validMoves = currentPlayer.hand.filter((move) => {
+    if (currentPlayer.submissionPending) {
+      return move.name === 'Submission Escape';
+    }
+    return (
       move.validPositions.includes(currentPlayer.position) &&
       currentPlayer.stamina >= move.staminaCost &&
-      (!move.isDefense || (move.isDefense && canPlayDefense(move)))
-  );
+      (!move.isDefense || canPlayDefense(move))
+    );
+  });
 
   if (validMoves.length === 0 || currentPlayer.isExhausted()) {
     // AI decides to pass or replace cards
@@ -766,7 +964,7 @@ function aiTurn() {
       showMessage(`${currentPlayer.name} passes and recovers stamina.`);
       logAction(`${currentPlayer.name} passes and recovers stamina.`);
       updateStatus();
-      updateRecentMoves(`${currentPlayer.name} passes.`, currentPlayer);
+      updateLatestMove(`${currentPlayer.name} passes and recovers stamina.`);
     } else {
       // Replace cards
       aiReplaceCards();
@@ -797,15 +995,14 @@ function aiTurn() {
       currentOpponent
     );
     updateMoveHistory(formattedDescription);
+    updateLatestMove(formattedDescription);
     logAction(formattedDescription);
     showMessage(`${currentPlayer.name} uses ${move.name}.`);
     updateStatus();
     updatePosition();
     updateHand();
-    updateRecentMoves(moveDescription, currentPlayer);
-    if (currentPlayer.submissionPending) {
-      // AI has attempted a submission, switch turns
-      handleSubmissionResponse();
+    if (currentOpponent.submissionPending) {
+      switchTurns(); // Allow opponent to respond
     } else {
       checkGameStatus();
       if (!gameOver) {
@@ -891,7 +1088,7 @@ function replaceCards() {
       card.innerHTML = `
         <h3>${move.name}</h3>
         ${move.damage > 0 ? `<p>Damage: ${move.damage}</p>` : ''}
-        <p>Stamina: -${move.staminaCost}</p>
+        <p>Stamina Cost: ${move.staminaCost}</p>
         <p>Position: ${move.validPositions.join(', ') || 'Any'}</p>
         <div class="tooltip">${move.description}</div>
       `;
@@ -902,6 +1099,8 @@ function replaceCards() {
 
   function finalizeReplacement(count) {
     logAction(`${currentPlayer.name} replaced ${count} card(s).`);
+    updateHand();
+    addControlButtons();
     checkGameStatus();
     if (!gameOver) {
       switchTurns();
